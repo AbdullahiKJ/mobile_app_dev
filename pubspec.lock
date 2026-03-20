@@ -9,6 +9,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.13.0"
+  autoscalable_container:
+    dependency: "direct main"
+    description:
+      name: autoscalable_container
+      sha256: fa26272888c9c7ab763b0afdf3383bc74ef1e93a5dd56e506549e8c79ef1aa8a
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.1"
   boolean_selector:
     dependency: transitive
     description:

@@ -1,3 +1,4 @@
+import 'package:autoscalable_container/autoscalable_container.dart';
 import 'package:flutter/material.dart';
 
 class PostCard extends StatelessWidget {
@@ -5,9 +6,13 @@ class PostCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AspectRatio(
-      aspectRatio: 5 / 2,
-      child:  Card(
+    return AutoScalableContainer(
+      gradient: LinearGradient(
+        colors: [Theme.of(context).colorScheme.primary, Theme.of(context).colorScheme.secondary]
+      ),
+      margin: EdgeInsetsGeometry.all(0),
+      borderRadius: 0,
+      child: Card(
         elevation: 2,
         child: Container(
           margin: const EdgeInsets.all(4.0),
@@ -62,10 +67,17 @@ class _PostDetails extends StatelessWidget {
     final TextStyle? contentTheme = Theme.of(context).textTheme.labelSmall;
 
     return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
-        Text("Abdullahi Ja'afar", style: userNameTheme),
-        Text("Lorem ipsum...", style: contentTheme)],
+        Padding(
+            padding: EdgeInsetsGeometry.all(5),
+            child: Text("Abdullahi Ja'afar", style: userNameTheme)
+          ),
+        Padding(
+            padding: EdgeInsetsGeometry.all(5),
+            child: Text("Lorem ipsum...", style: contentTheme),
+        )
+      ]
     );
   }
 }
@@ -75,7 +87,13 @@ class _PostImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(flex: 2, child: Image.asset("assets/images/eye.jpg"));
+    return Expanded(
+      flex: 0,
+      child: Padding(
+        padding: EdgeInsetsGeometry.all(5),
+        child: Image.asset("assets/images/eye.jpg")
+      )
+    );
   }
 }
 
@@ -85,7 +103,6 @@ class _Actions extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[_Options(), _PostTimeStamp()],
     );
   }
@@ -97,8 +114,10 @@ class _Options extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      flex: 2,
-      child: Icon(Icons.more_horiz)
+      child: Container(
+        alignment: Alignment.topCenter,
+        child: Icon(Icons.more_horiz)
+      )
     );
   }
 }
@@ -110,8 +129,10 @@ class _PostTimeStamp extends StatelessWidget {
   Widget build(BuildContext context) {
     final TextStyle? timeTheme = Theme.of(context).textTheme.labelSmall;
     return Expanded(
-      flex: 2,
-      child: Text("5:15", style: timeTheme),
+      child: Container(
+        alignment: Alignment.bottomCenter,
+        child: Text("5:15", style: timeTheme)
+      ),
     );
   }
 }
