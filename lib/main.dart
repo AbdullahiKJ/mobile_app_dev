@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_app_dev/view/pages/new_post.dart';
-import 'package:mobile_app_dev/view/widgets/post_card.dart';
 import 'package:mobile_app_dev/view/pages/home_page.dart';
 
 void main() {
