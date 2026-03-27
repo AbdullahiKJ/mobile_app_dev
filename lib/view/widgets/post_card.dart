@@ -1,8 +1,10 @@
 import 'package:autoscalable_container/autoscalable_container.dart';
 import 'package:flutter/material.dart';
+import 'package:mobile_app_dev/view/pages/home_page.dart';
 
 class PostCard extends StatelessWidget {
-  const PostCard({super.key});
+  final Post post;
+  const PostCard({super.key, required this.post});
 
   @override
   Widget build(BuildContext context) {
@@ -20,8 +22,8 @@ class PostCard extends StatelessWidget {
           child: Row(
             children: <Widget>[
               _UserImage(),
-              _Post(),
-              _Actions(),
+              _Post(post: post),
+              _Actions(post: post),
             ],
           ),
         ),
@@ -45,26 +47,30 @@ class _UserImage extends StatelessWidget {
 }
 
 class _Post extends StatelessWidget {
-  const _Post({super.key});
+  final Post post;
+  const _Post({super.key, required this.post});
 
   @override
   Widget build(BuildContext context) {
     return Expanded(
       flex: 3,
       child: Column(
-        children: <Widget>[_PostDetails(), _PostImage()],
+        children: post.imagePath.isNotEmpty
+            ? <Widget>[_PostDetails(post: post), _PostImage(post: post)]
+            : <Widget>[_PostDetails(post: post)],
       ),
     );
   }
 }
 
 class _PostDetails extends StatelessWidget {
-  const _PostDetails({super.key});
+  final Post post;
+  const _PostDetails({super.key, required this.post});
 
   @override
   Widget build(BuildContext context) {
     final TextStyle? userNameTheme = Theme.of(context).textTheme.titleLarge;
-    final TextStyle? contentTheme = Theme.of(context).textTheme.labelSmall;
+    final TextStyle? contentTheme = Theme.of(context).textTheme.bodyLarge;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -75,7 +81,7 @@ class _PostDetails extends StatelessWidget {
           ),
         Padding(
             padding: EdgeInsetsGeometry.all(5),
-            child: Text("Lorem ipsum...", style: contentTheme),
+            child: Text(post.content ?? "Placeholder text", style: contentTheme),
         )
       ]
     );
@@ -83,7 +89,8 @@ class _PostDetails extends StatelessWidget {
 }
 
 class _PostImage extends StatelessWidget {
-  const _PostImage({super.key});
+  final Post post;
+  const _PostImage({super.key, required this.post});
 
   @override
   Widget build(BuildContext context) {
@@ -91,19 +98,27 @@ class _PostImage extends StatelessWidget {
       flex: 0,
       child: Padding(
         padding: EdgeInsetsGeometry.all(5),
-        child: Image.asset("assets/images/eye.jpg")
+        child: Image(
+            image: AssetImage(post.imagePath),
+            // Fallback image
+            errorBuilder: (BuildContext context, Object exception, StackTrace? stackTrace) {
+              return Image(
+                image: AssetImage("assets/images/eye.jpg")
+              );
+            })
       )
     );
   }
 }
 
 class _Actions extends StatelessWidget {
-  const _Actions({super.key});
+  final Post post;
+  const _Actions({super.key, required this.post});
 
   @override
   Widget build(BuildContext context) {
     return Column(
-      children: <Widget>[_Options(), _PostTimeStamp()],
+      children: <Widget>[_Options(), _PostTimeStamp(post: post)],
     );
   }
 }
@@ -123,7 +138,8 @@ class _Options extends StatelessWidget {
 }
 
 class _PostTimeStamp extends StatelessWidget {
-  const _PostTimeStamp({super.key});
+  final Post post;
+  const _PostTimeStamp({super.key, required this.post});
 
   @override
   Widget build(BuildContext context) {
@@ -131,7 +147,7 @@ class _PostTimeStamp extends StatelessWidget {
     return Expanded(
       child: Container(
         alignment: Alignment.bottomCenter,
-        child: Text("5:15", style: timeTheme)
+        child: Text('${post.date.hour}:${post.date.minute}', style: timeTheme)
       ),
     );
   }
