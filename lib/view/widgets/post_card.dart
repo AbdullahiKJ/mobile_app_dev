@@ -1,10 +1,11 @@
 import 'package:autoscalable_container/autoscalable_container.dart';
 import 'package:flutter/material.dart';
-import 'package:mobile_app_dev/view/pages/home_page.dart';
+import 'package:mobile_app_dev/models/post.dart';
 
 class PostCard extends StatelessWidget {
   final Post post;
-  const PostCard({super.key, required this.post});
+  final void onDelete;
+  const PostCard({super.key, required this.post, required this.onDelete});
 
   @override
   Widget build(BuildContext context) {
