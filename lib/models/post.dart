@@ -18,7 +18,7 @@ class Post {
       id: map['id'],
       content: map['content'],
       imagePath: map['imagePath'],
-      date: map['date'],
+      date: DateTime.parse(map['date']),
       userId: map['userId'],
     );
   }

@@ -64,7 +64,9 @@ class _PageLayoutState extends State<PageLayout> {
             MaterialPageRoute<void>(
               builder: (context) => const NewPost(),
             ),
-          );
+          ).then((_) {
+            setState(() {});
+          });
         },
         tooltip: 'Increment',
         child: const Icon(Icons.add),

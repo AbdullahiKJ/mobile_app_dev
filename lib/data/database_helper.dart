@@ -43,8 +43,8 @@ class DatabaseHelper {
       CREATE TABLE Posts (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         content TEXT,
-        imagePath TEXT,
-        date DATETIME,
+        imagePaths TEXT,
+        date TEXT,
         userId INTEGER,
         FOREIGN KEY (userId) REFERENCES Users (id)
       )
