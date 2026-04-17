@@ -43,7 +43,7 @@ class _HomePageState extends State<HomePage> {
       ? ListView.builder(
           itemCount: posts.length,
           itemBuilder: (BuildContext context, int index) {
-            return PostCard(post: posts[index], onDelete: deletePost(index),);
+            return PostCard(post: posts[index], onDelete: () => deletePost(posts[index].id),);
           },
       )
       : Center(child: Text("No Posts yet"));

@@ -1,6 +1,7 @@
 import 'package:autoscalable_container/autoscalable_container.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_app_dev/models/post.dart';
+import 'dart:io';
 
 class PostCard extends StatelessWidget {
   final Post post;
@@ -53,12 +54,20 @@ class _Post extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final List<String> images = post.imagePaths.isNotEmpty ? post.imagePaths.split('|') : [];
+
     return Expanded(
       flex: 3,
       child: Column(
-        children: post.imagePath.isNotEmpty
-            ? <Widget>[_PostDetails(post: post), _PostImage(post: post)]
-            : <Widget>[_PostDetails(post: post)],
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _PostDetails(post: post),
+
+          if (images.isNotEmpty) ...[
+            const SizedBox(height: 8),
+            _PostImages(images: images),
+          ]
+        ]
       ),
     );
   }
@@ -89,24 +98,68 @@ class _PostDetails extends StatelessWidget {
   }
 }
 
-class _PostImage extends StatelessWidget {
-  final Post post;
-  const _PostImage({super.key, required this.post});
+class _PostImages extends StatelessWidget {
+  final List<String> images;
+  const _PostImages({super.key, required this.images});
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      flex: 0,
-      child: Padding(
-        padding: EdgeInsetsGeometry.all(5),
-        child: Image(
-            image: AssetImage(post.imagePath),
-            // Fallback image
-            errorBuilder: (BuildContext context, Object exception, StackTrace? stackTrace) {
-              return Image(
-                image: AssetImage("assets/images/eye.jpg")
-              );
-            })
+    if (images.length == 1) {
+      return _singleImage(images[0]);
+    } else {
+      return _gridImages();
+    }
+  }
+
+  Widget _singleImage(String path) {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(10),
+      child: SizedBox(
+        width: double.infinity,
+        height: 200,
+        child: Image.file(
+          File(path),
+          fit: BoxFit.cover,
+          errorBuilder: (_, __, ___) {
+            return Container(
+              color: Colors.grey,
+              child: const Icon(Icons.broken_image),
+            );
+          }
+        ),
+      )
+    );
+  }
+
+  Widget _gridImages() {
+    return SizedBox(
+      height: 200,
+      child: GridView.builder(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        itemCount: images.length > 4 ? 4 : images.length,
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          crossAxisSpacing: 5,
+          mainAxisSpacing: 5,
+        ),
+        itemBuilder: (context, index) {
+          return ClipRRect(
+            borderRadius: BorderRadius.circular(5),
+            child: SizedBox.expand(
+              child: Image.file(
+                File(images[index]),
+                fit: BoxFit.cover,
+                errorBuilder: (_, __, ___) {
+                  return Container(
+                    color: Colors.grey,
+                    child: const Icon(Icons.broken_image),
+                  );
+                }
+              ),
+            ),
+          );
+        },
       )
     );
   }
@@ -118,39 +171,17 @@ class _Actions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: <Widget>[_Options(), _PostTimeStamp(post: post)],
-    );
-  }
-}
-
-class _Options extends StatelessWidget {
-  const _Options({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Expanded(
-      child: Container(
-        alignment: Alignment.topCenter,
-        child: Icon(Icons.more_horiz)
-      )
-    );
-  }
-}
-
-class _PostTimeStamp extends StatelessWidget {
-  final Post post;
-  const _PostTimeStamp({super.key, required this.post});
-
-  @override
-  Widget build(BuildContext context) {
     final TextStyle? timeTheme = Theme.of(context).textTheme.labelSmall;
-    return Expanded(
-      child: Container(
-        alignment: Alignment.bottomCenter,
-        child: Text('${post.date.hour}:${post.date.minute}', style: timeTheme)
-      ),
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(Icons.more_horiz),
+        const SizedBox(height: 8),
+        Text(
+          '${post.date.hour}:${post.date.minute}',
+          style: timeTheme,
+        ),      ],
     );
   }
 }
-

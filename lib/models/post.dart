@@ -1,14 +1,14 @@
 class Post {
   final int id;
   final String content;
-  final String imagePath;
+  final String imagePaths;
   final DateTime date;
   final int userId;
 
   Post({
     required this.id,
     required this.content,
-    required this.imagePath,
+    required this.imagePaths,
     required this.date,
     required this.userId
   });
@@ -17,7 +17,7 @@ class Post {
     return Post(
       id: map['id'],
       content: map['content'],
-      imagePath: map['imagePath'],
+      imagePaths: map['imagePaths'],
       date: DateTime.parse(map['date']),
       userId: map['userId'],
     );
@@ -28,7 +28,7 @@ class Post {
     return {
       'id': id,
       'content': content,
-      'imagePath': imagePath,
+      'imagePaths': imagePaths,
       'date': date,
       'userId': userId,
     };
