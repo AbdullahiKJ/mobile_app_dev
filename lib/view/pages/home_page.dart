@@ -12,7 +12,6 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   List<Post> posts = [];
-  DatabaseHelper dbHelper = DatabaseHelper.instance;
 
   @override
   void initState() {

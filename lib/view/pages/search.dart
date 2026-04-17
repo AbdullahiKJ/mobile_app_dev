@@ -36,7 +36,7 @@ class _SearchState extends State<Search> {
     return Column(
       children: [
         Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.only(left: 8, right: 8, bottom: 8, top: 50),
           child: SearchBar(
             controller: _controller,
             padding: const WidgetStatePropertyAll<EdgeInsets>(
@@ -50,6 +50,7 @@ class _SearchState extends State<Search> {
         Expanded(
           child: posts.isNotEmpty
             ? ListView.builder(
+              padding: EdgeInsets.only(top:0),
               itemCount: posts.length,
               itemBuilder: (BuildContext context, int index) {
               return PostCard(post: posts[index], onDelete: () => deletePost(posts[index].id),);

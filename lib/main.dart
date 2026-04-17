@@ -53,10 +53,12 @@ class _PageLayoutState extends State<PageLayout> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.title),
-      ),
+      appBar: currentPageIndex == 0
+          ? AppBar(
+              backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+              title: Text(widget.title),
+          )
+          : null,
       body: getCurrentPage(currentPageIndex),
       bottomNavigationBar: NavigationBar(
         onDestinationSelected: (int index) => _navigatePage(index),
