@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_app_dev/view/pages/new_post.dart';
 import 'package:mobile_app_dev/view/pages/home_page.dart';
+import 'package:mobile_app_dev/view/pages/profile.dart';
+import 'package:mobile_app_dev/view/pages/search.dart';
 
 void main() {
   runApp(const MyApp());
@@ -32,11 +34,21 @@ class PageLayout extends StatefulWidget {
 class _PageLayoutState extends State<PageLayout> {
   int currentPageIndex = 0;
 
-  // todo: handle page navigation
   void _navigatePage(int index) {
     setState(() {
       currentPageIndex = index;
     });
+  }
+
+  Widget getCurrentPage(int index) {
+    switch(index) {
+      case 1:
+        return Profile();
+      case 2:
+        return Search();
+      default:
+        return HomePage();
+    }
   }
   @override
   Widget build(BuildContext context) {
@@ -45,8 +57,7 @@ class _PageLayoutState extends State<PageLayout> {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(widget.title),
       ),
-      // todo: the body should reflect the current page index (home, profile, search)
-      body: HomePage(),
+      body: getCurrentPage(currentPageIndex),
       bottomNavigationBar: NavigationBar(
         onDestinationSelected: (int index) => _navigatePage(index),
         indicatorColor: Theme.of(context).colorScheme.inversePrimary,
