@@ -105,6 +105,29 @@ class DatabaseHelper {
     );
   }
 
+  // Get All Users
+  Future<List<Map<String, dynamic>>> getUsers() async {
+    final db = await instance.database;
+    return await db.query('Users', orderBy: 'id ASC');
+  }
+
+  // Get a user by id
+  Future<Map<String, dynamic>?> getUser(int id) async {
+    final db = await instance.database;
+    final result = await db.query(
+      'Users',
+      where: 'id = ?',
+      whereArgs: [id],
+      limit: 1,
+    );
+
+    if (result.isNotEmpty) {
+      return result.first; // returns a Map
+    } else {
+      return null; // no user found
+    }
+  }
+
   Future close() async {
     final db = await instance.database;
     db.close();
