@@ -9,7 +9,7 @@ import '../../models/user.dart';
 class PostCard extends StatelessWidget {
   final Post post;
   final User user;
-  final void onDelete;
+  final VoidCallback onDelete;
   const PostCard({super.key, required this.post, required this.user, required this.onDelete});
 
   @override
@@ -28,8 +28,7 @@ class PostCard extends StatelessWidget {
           child: Row(
             children: <Widget>[
               UserIcon(initials: user.initials),
-              _Post(post: post, user: user,),
-              _Actions(post: post),
+              _Post(post: post, user: user, onDelete: onDelete),
             ],
           ),
         ),
@@ -41,7 +40,8 @@ class PostCard extends StatelessWidget {
 class _Post extends StatelessWidget {
   final Post post;
   final User user;
-  const _Post({super.key, required this.post, required this.user});
+  final VoidCallback onDelete;
+  const _Post({super.key, required this.post, required this.user, required this.onDelete});
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +52,7 @@ class _Post extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _PostDetails(post: post, userName: user.name,),
+          _PostDetails(post: post, userName: user.name, onDelete: onDelete),
 
           if (images.isNotEmpty) ...[
             const SizedBox(height: 8),
@@ -67,7 +67,8 @@ class _Post extends StatelessWidget {
 class _PostDetails extends StatelessWidget {
   final Post post;
   final String userName;
-  const _PostDetails({super.key, required this.post, required this.userName});
+  final VoidCallback onDelete;
+  const _PostDetails({super.key, required this.post, required this.userName, required this.onDelete});
 
   @override
   Widget build(BuildContext context) {
@@ -75,12 +76,19 @@ class _PostDetails extends StatelessWidget {
     final TextStyle? contentTheme = Theme.of(context).textTheme.bodyLarge;
 
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        Padding(
-            padding: EdgeInsetsGeometry.all(5),
-            child: Text("Abdullahi Ja'afar", style: userNameTheme)
-          ),
+        Row(
+          children: [
+            Expanded(
+                child: Padding(
+                    padding: EdgeInsetsGeometry.all(5),
+                    child: Text(userName, style: userNameTheme)
+                ),
+            ),
+            _Actions(post: post, onDelete: onDelete)
+          ]
+        ),
         Padding(
             padding: EdgeInsetsGeometry.all(5),
             child: Text(post.content ?? "Placeholder text", style: contentTheme),
@@ -159,21 +167,49 @@ class _PostImages extends StatelessWidget {
 
 class _Actions extends StatelessWidget {
   final Post post;
-  const _Actions({super.key, required this.post});
+  final VoidCallback onDelete;
+
+  const _Actions({super.key, required this.post, required this.onDelete});
+
+  void _sharePost(BuildContext context) {
+    // temporary placeholder
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text("Sharing: ${post.content}")),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    final TextStyle? timeTheme = Theme.of(context).textTheme.labelSmall;
+    return PopupMenuButton(
+      icon: const Icon(Icons.more_horiz),
 
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Icon(Icons.more_horiz),
-        const SizedBox(height: 8),
-        Text(
-          '${post.date.hour}:${post.date.minute}',
-          style: timeTheme,
-        ),      ],
+      onSelected: (value) {
+        if(value == 'edit') {
+
+        }
+        else if (value == 'delete') {
+          onDelete();
+        } else if (value == 'share') {
+          _sharePost(context);
+        }
+      },
+
+      itemBuilder: (context) => [
+        // Only edit if the post has a user id of 1 (My Posts)
+        if(post.userId == 1)
+          const PopupMenuItem(
+            value: 'edit',
+            child: Text('Edit'),
+          ),
+        const PopupMenuItem(
+          value: 'delete',
+          child: Text('Delete'),
+        ),
+        const PopupMenuItem(
+          value: 'share',
+          child: Text('Share'),
+        ),
+      ],
     );
   }
 }
