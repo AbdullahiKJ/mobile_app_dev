@@ -5,6 +5,7 @@ import 'package:mobile_app_dev/view/widgets/user_icon.dart';
 import 'dart:io';
 
 import '../../models/user.dart';
+import '../pages/new_post.dart';
 
 class PostCard extends StatelessWidget {
   final Post post;
@@ -172,7 +173,7 @@ class _Actions extends StatelessWidget {
   const _Actions({super.key, required this.post, required this.onDelete});
 
   void _sharePost(BuildContext context) {
-    // temporary placeholder
+    // todo: remove temporary placeholder
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text("Sharing: ${post.content}")),
     );
@@ -185,23 +186,38 @@ class _Actions extends StatelessWidget {
 
       onSelected: (value) {
         if(value == 'edit') {
-
+          Navigator.push(
+            context,
+            MaterialPageRoute<void>(
+              builder: (context) => const NewPost(),
+            ),
+          );
         }
         else if (value == 'delete') {
+          // Delete the post
           onDelete();
+
+          // Show delete notification
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text("Post deleted"),
+              duration: const Duration(seconds: 2),
+            ),
+          );
         } else if (value == 'share') {
           _sharePost(context);
         }
       },
 
       itemBuilder: (context) => [
-        // Only edit if the post has a user id of 1 (My Posts)
+        // Only edit/delete posts if the user id is 1 (My Posts)
         if(post.userId == 1)
           const PopupMenuItem(
             value: 'edit',
             child: Text('Edit'),
           ),
-        const PopupMenuItem(
+        if(post.userId == 1)
+          const PopupMenuItem(
           value: 'delete',
           child: Text('Delete'),
         ),

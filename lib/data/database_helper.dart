@@ -63,6 +63,12 @@ class DatabaseHelper {
     return await db.query('Posts', orderBy: 'date DESC');
   }
 
+  // Get All Posts from a given user
+  Future<List<Map<String, dynamic>>> getUserPosts(int id) async {
+    final db = await instance.database;
+    return await db.query('Posts', where: 'userId = ?', whereArgs: [id], orderBy: 'date DESC');
+  }
+
   // Update Post
   Future<int> updatePost(Map<String, dynamic> row) async {
     final db = await instance.database;

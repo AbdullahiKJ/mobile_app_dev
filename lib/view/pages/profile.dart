@@ -25,10 +25,10 @@ class _ProfileState extends State<Profile> {
     loadUsers();
   }
 
-  // Fetch all posts
+  // Fetch my posts
   Future<void> loadPosts() async {
-    // Get posts from the database
-    final data = await DatabaseHelper.instance.getPosts();
+    // Get only my posts from the database
+    final data = await DatabaseHelper.instance.getUserPosts(1);
     // Update the posts variable with a list of posts
     setState(() {
       posts = data.map((e) => Post.fromMap(e)).toList();
@@ -73,7 +73,7 @@ class _ProfileState extends State<Profile> {
   void showToast(int count) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text("$count message${count == 1 ? '' : 's'} deleted"),
+        content: Text("$count post${count == 1 ? '' : 's'} deleted"),
         duration: const Duration(seconds: 2),
       ),
     );
