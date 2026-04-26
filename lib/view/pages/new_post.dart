@@ -3,10 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mobile_app_dev/data/database_helper.dart';
 
+import '../../models/post.dart';
 import '../widgets/user_icon.dart';
 
 class NewPost extends StatefulWidget {
-  const NewPost({super.key});
+  final Post? post;
+  final bool isEditing;
+  const NewPost({super.key,  this.post, this.isEditing = false});
 
   @override
   State<NewPost> createState() => _NewPostState();
@@ -35,6 +38,20 @@ class _NewPostState extends State<NewPost> {
         charCount = _controller.text.length;
       });
     });
+
+    // Set the text controller value to the content variable
+    if(widget.post != null) {
+      _controller.text = widget.post?.content ?? '';
+      charCount = _controller.text.length;
+
+      // Assign the image paths to the selectedImages list
+      if(widget.post!.imagePaths.isNotEmpty) {
+        List<String>? existingImages = widget.post?.imagePaths.split("|");
+        for (var i in existingImages!) {
+          selectedImages.add(File(i));
+        }
+      }
+    }
   }
 
   void _createPost() async {
@@ -56,8 +73,16 @@ class _NewPostState extends State<NewPost> {
       'userId': 1, // default user
     };
 
-    await DatabaseHelper.instance.insertPost(postMap);
+    // Add the post id if editing
+    if(widget.isEditing && widget.post?.id != null) {
+      postMap['id'] = widget.post!.id;
+      await DatabaseHelper.instance.updatePost(postMap);
+    }
+    else {
+      await DatabaseHelper.instance.insertPost(postMap);
+    }
     Navigator.pop(context);
+    setState(() {});
   }
 
   void _openGallery() async {
@@ -66,7 +91,7 @@ class _NewPostState extends State<NewPost> {
 
     final pickedImages = await ImagePicker().pickMultiImage();
 
-    if (pickedImages != null) {
+    if (pickedImages.isNotEmpty) {
       setState(() {
         for (var img in pickedImages) {
           if (selectedImages.length < 4) {

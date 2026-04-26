@@ -33,6 +33,17 @@ class PageLayout extends StatefulWidget {
 
 class _PageLayoutState extends State<PageLayout> {
   int currentPageIndex = 0;
+  late final HomePage _homePage;
+  late final Profile _profilePage;
+  late final Search _searchPage;
+
+  @override
+  void initState() {
+    super.initState();
+    _homePage = HomePage();
+    _profilePage = Profile();
+    _searchPage = Search();
+  }
 
   void _navigatePage(int index) {
     setState(() {
@@ -43,11 +54,11 @@ class _PageLayoutState extends State<PageLayout> {
   Widget getCurrentPage(int index) {
     switch(index) {
       case 1:
-        return Profile();
+        return _profilePage;
       case 2:
-        return Search();
+        return _searchPage;
       default:
-        return HomePage();
+        return _homePage;
     }
   }
   @override
@@ -71,15 +82,16 @@ class _PageLayoutState extends State<PageLayout> {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
+        onPressed: () async {
+          final result = await Navigator.push(
             context,
-            MaterialPageRoute<void>(
+            MaterialPageRoute(
               builder: (context) => const NewPost(),
             ),
-          ).then((_) {
+          );
+          if(result == true){
             setState(() {});
-          });
+          }
         },
         tooltip: 'Increment',
         child: const Icon(Icons.add),

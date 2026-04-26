@@ -189,7 +189,7 @@ class _Actions extends StatelessWidget {
           Navigator.push(
             context,
             MaterialPageRoute<void>(
-              builder: (context) => const NewPost(),
+              builder: (context) => NewPost(post: post, isEditing: true),
             ),
           );
         }
