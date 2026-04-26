@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mobile_app_dev/data/database_helper.dart';
 
+import '../widgets/user_icon.dart';
+
 class NewPost extends StatefulWidget {
   const NewPost({super.key});
 
@@ -149,8 +151,7 @@ class _NewPostState extends State<NewPost> {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // todo: user icon component
-            Icon(Icons.account_circle),
+            UserIcon(initials: 'AJ'),
             // Padding between the user icon and text box
             SizedBox(width: 10),
 

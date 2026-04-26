@@ -1,12 +1,16 @@
 import 'package:autoscalable_container/autoscalable_container.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_app_dev/models/post.dart';
+import 'package:mobile_app_dev/view/widgets/user_icon.dart';
 import 'dart:io';
+
+import '../../models/user.dart';
 
 class PostCard extends StatelessWidget {
   final Post post;
+  final User user;
   final void onDelete;
-  const PostCard({super.key, required this.post, required this.onDelete});
+  const PostCard({super.key, required this.post, required this.user, required this.onDelete});
 
   @override
   Widget build(BuildContext context) {
@@ -23,8 +27,8 @@ class PostCard extends StatelessWidget {
           padding: const EdgeInsets.all(4.0),
           child: Row(
             children: <Widget>[
-              _UserImage(),
-              _Post(post: post),
+              UserIcon(initials: user.initials),
+              _Post(post: post, user: user,),
               _Actions(post: post),
             ],
           ),
@@ -34,23 +38,10 @@ class PostCard extends StatelessWidget {
   }
 }
 
-class _UserImage extends StatelessWidget {
-  const _UserImage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Align(
-      alignment: AlignmentGeometry.topCenter,
-      child: CircleAvatar(
-        backgroundImage: AssetImage("assets/images/strawberry.jpg"),
-      ),
-    );
-  }
-}
-
 class _Post extends StatelessWidget {
   final Post post;
-  const _Post({super.key, required this.post});
+  final User user;
+  const _Post({super.key, required this.post, required this.user});
 
   @override
   Widget build(BuildContext context) {
@@ -61,7 +52,7 @@ class _Post extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _PostDetails(post: post),
+          _PostDetails(post: post, userName: user.name,),
 
           if (images.isNotEmpty) ...[
             const SizedBox(height: 8),
@@ -75,7 +66,8 @@ class _Post extends StatelessWidget {
 
 class _PostDetails extends StatelessWidget {
   final Post post;
-  const _PostDetails({super.key, required this.post});
+  final String userName;
+  const _PostDetails({super.key, required this.post, required this.userName});
 
   @override
   Widget build(BuildContext context) {

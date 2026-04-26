@@ -3,6 +3,8 @@ import 'package:mobile_app_dev/models/post.dart';
 import 'package:mobile_app_dev/data/database_helper.dart';
 import 'package:mobile_app_dev/view/widgets/post_card.dart';
 
+import '../../models/user.dart';
+
 class Search extends StatefulWidget {
   const Search({super.key});
 
@@ -12,7 +14,14 @@ class Search extends StatefulWidget {
 
 class _SearchState extends State<Search> {
   List<Post> posts = [];
+  List<User> users = [];
   final SearchController _controller = SearchController();
+
+  @override
+  void initState() {
+    super.initState();
+    loadUsers();
+  }
 
   // Search for posts in the database
   Future<void> _searchPosts() async{
@@ -21,6 +30,16 @@ class _SearchState extends State<Search> {
     // Update the posts variable with a list of posts
     setState(() {
       posts = data.map((e) => Post.fromMap(e)).toList();
+    });
+  }
+
+  // Fetch all users
+  Future<void> loadUsers() async {
+    // Get users from the database
+    final data = await DatabaseHelper.instance.getUsers();
+    // Update the users variable with a list of users
+    setState(() {
+      users = data.map((e) => User.fromMap(e)).toList();
     });
   }
 
@@ -53,7 +72,10 @@ class _SearchState extends State<Search> {
               padding: EdgeInsets.only(top:0),
               itemCount: posts.length,
               itemBuilder: (BuildContext context, int index) {
-              return PostCard(post: posts[index], onDelete: () => deletePost(posts[index].id),);
+              return PostCard(
+                post: posts[index],
+                user: users.firstWhere((user) => user.id == posts[index].userId),
+                onDelete: () => deletePost(posts[index].id),);
               },
             )
             : Center(child: Text("No Posts Found"))

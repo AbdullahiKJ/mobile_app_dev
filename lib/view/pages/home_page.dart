@@ -3,6 +3,8 @@ import 'package:mobile_app_dev/data/database_helper.dart';
 import 'package:mobile_app_dev/models/post.dart';
 import 'package:mobile_app_dev/view/widgets/post_card.dart';
 
+import '../../models/user.dart';
+
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
@@ -12,11 +14,13 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   List<Post> posts = [];
+  List<User> users = [];
 
   @override
   void initState() {
     super.initState();
     loadPosts();
+    loadUsers();
   }
 
   // Fetch all posts
@@ -26,6 +30,16 @@ class _HomePageState extends State<HomePage> {
     // Update the posts variable with a list of posts
     setState(() {
       posts = data.map((e) => Post.fromMap(e)).toList();
+    });
+  }
+
+  // Fetch all users
+  Future<void> loadUsers() async {
+    // Get users from the database
+    final data = await DatabaseHelper.instance.getUsers();
+    // Update the users variable with a list of users
+    setState(() {
+      users = data.map((e) => User.fromMap(e)).toList();
     });
   }
 
@@ -42,7 +56,11 @@ class _HomePageState extends State<HomePage> {
       ? ListView.builder(
           itemCount: posts.length,
           itemBuilder: (BuildContext context, int index) {
-            return PostCard(post: posts[index], onDelete: () => deletePost(posts[index].id),);
+            return PostCard(
+              post: posts[index],
+              user: users.firstWhere((user) => user.id == posts[index].userId),
+              onDelete: () => deletePost(posts[index].id)
+            );
           },
       )
       : Center(child: Text("No Posts yet"));

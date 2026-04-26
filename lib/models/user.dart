@@ -9,11 +9,19 @@ class User {
     return initials;
   }
 
-  User._(this.id, this.name, this.initials);
+  User({
+    required this.id,
+    required this.name,
+    required this.initials
+  });
 
-  factory User(int id, String name) {
-    final List<String> names = name.split(' ');
+  factory User.fromMap(Map<String, dynamic> map) {
+    final List<String> names = map['name'].split(' ');
     final initials = names[0][0] + names[names.length - 1][0];
-    return User._(id, name, initials);
+    return User(
+        id: map['id'],
+        name: map['name'],
+        initials: initials
+    );
   }
 }
