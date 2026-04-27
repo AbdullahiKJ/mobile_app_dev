@@ -8,6 +8,7 @@ import '../../models/user.dart';
 import '../pages/new_post.dart';
 
 import 'package:flutter_email_sender/flutter_email_sender.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class PostCard extends StatelessWidget {
   final Post post;
@@ -204,7 +205,7 @@ class _Actions extends StatelessWidget {
     required this.onRefresh,
   });
 
-  void _sharePost(BuildContext context) async {
+  void _sharePostEmail(BuildContext context) async {
     final email = Email(
       subject: "Sharing Post",
       body: post.content,
@@ -214,6 +215,18 @@ class _Actions extends StatelessWidget {
     );
 
     await FlutterEmailSender.send(email);
+  }
+
+  void _sharePostX(BuildContext context) async {
+    final encodedText = Uri.encodeComponent(post.content ?? '');
+
+    final url = "https://x.com/intent/post?text=$encodedText";
+    final Uri uri = Uri.parse(url);
+
+    await launchUrl(
+      uri,
+      mode: LaunchMode.externalApplication,
+    );
   }
 
   @override
@@ -244,8 +257,10 @@ class _Actions extends StatelessWidget {
               duration: const Duration(seconds: 2),
             ),
           );
-        } else if (value == 'share') {
-          _sharePost(context);
+        } else if (value == 'shareEmail') {
+          _sharePostEmail(context);
+        } else if (value == 'shareX') {
+          _sharePostX(context);
         }
       },
 
@@ -262,8 +277,12 @@ class _Actions extends StatelessWidget {
           child: Text('Delete'),
         ),
         const PopupMenuItem(
-          value: 'share',
-          child: Text('Share'),
+          value: 'shareEmail',
+          child: Text('Share (Email)'),
+        ),
+        const PopupMenuItem(
+          value: 'shareX',
+          child: Text('Share (X)'),
         ),
       ],
     );
