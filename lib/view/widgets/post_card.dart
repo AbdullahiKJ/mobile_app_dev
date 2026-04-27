@@ -7,6 +7,8 @@ import 'dart:io';
 import '../../models/user.dart';
 import '../pages/new_post.dart';
 
+import 'package:flutter_email_sender/flutter_email_sender.dart';
+
 class PostCard extends StatelessWidget {
   final Post post;
   final User user;
@@ -202,11 +204,16 @@ class _Actions extends StatelessWidget {
     required this.onRefresh,
   });
 
-  void _sharePost(BuildContext context) {
-    // todo: remove temporary placeholder
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text("Sharing: ${post.content}")),
+  void _sharePost(BuildContext context) async {
+    final email = Email(
+      subject: "Sharing Post",
+      body: post.content,
+      recipients: [],
+      attachmentPaths: post.imagePaths.isNotEmpty ? post.imagePaths.split("|") : [],
+      isHTML: false,
     );
+
+    await FlutterEmailSender.send(email);
   }
 
   @override
