@@ -11,7 +11,15 @@ class PostCard extends StatelessWidget {
   final Post post;
   final User user;
   final VoidCallback onDelete;
-  const PostCard({super.key, required this.post, required this.user, required this.onDelete});
+  final VoidCallback onRefresh;
+
+  const PostCard({
+    super.key,
+    required this.post,
+    required this.user,
+    required this.onDelete,
+    required this.onRefresh
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +37,7 @@ class PostCard extends StatelessWidget {
           child: Row(
             children: <Widget>[
               UserIcon(initials: user.initials),
-              _Post(post: post, user: user, onDelete: onDelete),
+              _Post(post: post, user: user, onDelete: onDelete, onRefresh: onRefresh,),
             ],
           ),
         ),
@@ -42,7 +50,15 @@ class _Post extends StatelessWidget {
   final Post post;
   final User user;
   final VoidCallback onDelete;
-  const _Post({super.key, required this.post, required this.user, required this.onDelete});
+  final VoidCallback onRefresh;
+
+  const _Post({
+    super.key,
+    required this.post,
+    required this.user,
+    required this.onDelete,
+    required this.onRefresh
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +69,7 @@ class _Post extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _PostDetails(post: post, userName: user.name, onDelete: onDelete),
+          _PostDetails(post: post, userName: user.name, onDelete: onDelete, onRefresh: onRefresh,),
 
           if (images.isNotEmpty) ...[
             const SizedBox(height: 8),
@@ -69,7 +85,15 @@ class _PostDetails extends StatelessWidget {
   final Post post;
   final String userName;
   final VoidCallback onDelete;
-  const _PostDetails({super.key, required this.post, required this.userName, required this.onDelete});
+  final VoidCallback onRefresh;
+
+  const _PostDetails({
+    super.key,
+    required this.post,
+    required this.userName,
+    required this.onDelete,
+    required this.onRefresh
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -87,7 +111,7 @@ class _PostDetails extends StatelessWidget {
                     child: Text(userName, style: userNameTheme)
                 ),
             ),
-            _Actions(post: post, onDelete: onDelete)
+            _Actions(post: post, onDelete: onDelete, onRefresh: onRefresh,)
           ]
         ),
         Padding(
@@ -169,8 +193,14 @@ class _PostImages extends StatelessWidget {
 class _Actions extends StatelessWidget {
   final Post post;
   final VoidCallback onDelete;
+  final VoidCallback onRefresh;
 
-  const _Actions({super.key, required this.post, required this.onDelete});
+  const _Actions({
+    super.key,
+    required this.post,
+    required this.onDelete,
+    required this.onRefresh,
+  });
 
   void _sharePost(BuildContext context) {
     // todo: remove temporary placeholder
@@ -184,14 +214,17 @@ class _Actions extends StatelessWidget {
     return PopupMenuButton(
       icon: const Icon(Icons.more_horiz),
 
-      onSelected: (value) {
+      onSelected: (value) async {
         if(value == 'edit') {
-          Navigator.push(
+          final result = await Navigator.push(
             context,
-            MaterialPageRoute<void>(
+            MaterialPageRoute(
               builder: (context) => NewPost(post: post, isEditing: true),
             ),
           );
+          if(result == true) {
+            onRefresh();
+          }
         }
         else if (value == 'delete') {
           // Delete the post

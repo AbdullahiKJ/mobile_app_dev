@@ -36,13 +36,23 @@ class _PageLayoutState extends State<PageLayout> {
   late final HomePage _homePage;
   late final Profile _profilePage;
   late final Search _searchPage;
+  final GlobalKey<HomePageState> homeKey = GlobalKey();
+  final GlobalKey<ProfileState> profileKey = GlobalKey();
+  final GlobalKey<SearchState> searchKey = GlobalKey();
+
 
   @override
   void initState() {
     super.initState();
-    _homePage = HomePage();
-    _profilePage = Profile();
-    _searchPage = Search();
+    _homePage = HomePage(key: homeKey);
+    _profilePage = Profile(key: profileKey);
+    _searchPage = Search(key: searchKey);
+  }
+
+  void refresh() {
+    homeKey.currentState!.refresh();
+    profileKey.currentState?.refresh();
+    searchKey.currentState?.refresh();
   }
 
   void _navigatePage(int index) {
@@ -91,6 +101,7 @@ class _PageLayoutState extends State<PageLayout> {
           );
           if(result == true){
             setState(() {});
+            refresh();
           }
         },
         tooltip: 'Increment',

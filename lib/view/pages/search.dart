@@ -9,10 +9,10 @@ class Search extends StatefulWidget {
   const Search({super.key});
 
   @override
-  State<Search> createState() => _SearchState();
+  State<Search> createState() => SearchState();
 }
 
-class _SearchState extends State<Search> {
+class SearchState extends State<Search> {
   List<Post> posts = [];
   List<User> users = [];
   final SearchController _controller = SearchController();
@@ -21,6 +21,10 @@ class _SearchState extends State<Search> {
   void initState() {
     super.initState();
     loadUsers();
+  }
+
+  void refresh() {
+    _searchPosts();
   }
 
   // Search for posts in the database
@@ -72,10 +76,12 @@ class _SearchState extends State<Search> {
               padding: EdgeInsets.only(top:0),
               itemCount: posts.length,
               itemBuilder: (BuildContext context, int index) {
-              return PostCard(
-                post: posts[index],
-                user: users.firstWhere((user) => user.id == posts[index].userId),
-                onDelete: () => deletePost(posts[index].id),);
+                return PostCard(
+                  post: posts[index],
+                  user: users.firstWhere((user) => user.id == posts[index].userId),
+                  onDelete: () => deletePost(posts[index].id),
+                  onRefresh: () => refresh(),
+                );
               },
             )
             : Center(child: Text("No Posts Found"))

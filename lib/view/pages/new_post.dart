@@ -81,7 +81,7 @@ class _NewPostState extends State<NewPost> {
     else {
       await DatabaseHelper.instance.insertPost(postMap);
     }
-    Navigator.pop(context);
+    Navigator.pop(context, true);
     setState(() {});
   }
 

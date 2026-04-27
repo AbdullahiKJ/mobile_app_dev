@@ -9,10 +9,10 @@ class Profile extends StatefulWidget {
   const Profile({super.key});
 
   @override
-  State<Profile> createState() => _ProfileState();
+  State<Profile> createState() => ProfileState();
 }
 
-class _ProfileState extends State<Profile> {
+class ProfileState extends State<Profile> {
   List<Post> posts = [];
   List<User> users = [];
   bool editMode = false;
@@ -23,6 +23,11 @@ class _ProfileState extends State<Profile> {
     super.initState();
     loadPosts();
     loadUsers();
+  }
+
+  void refresh() async {
+    await loadPosts();
+    await loadUsers();
   }
 
   // Fetch my posts
@@ -161,7 +166,9 @@ class _ProfileState extends State<Profile> {
                       child: PostCard(
                           post: posts[index],
                           user: users.firstWhere((user) => user.id == posts[index].userId),
-                          onDelete: () => deletePost(posts[index].id))
+                          onDelete: () => deletePost(posts[index].id),
+                          onRefresh: () => refresh(),
+                      ),
                     )
                   ]
                 );

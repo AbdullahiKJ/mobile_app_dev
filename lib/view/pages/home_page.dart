@@ -9,10 +9,10 @@ class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  State<HomePage> createState() => HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class HomePageState extends State<HomePage> {
   List<Post> posts = [];
   List<User> users = [];
 
@@ -21,6 +21,11 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     loadPosts();
     loadUsers();
+  }
+
+  void refresh() async {
+    await loadPosts();
+    await loadUsers();
   }
 
   // Fetch all posts
@@ -59,7 +64,8 @@ class _HomePageState extends State<HomePage> {
             return PostCard(
               post: posts[index],
               user: users.firstWhere((user) => user.id == posts[index].userId),
-              onDelete: () => deletePost(posts[index].id)
+              onDelete: () => deletePost(posts[index].id),
+              onRefresh: () => refresh(),
             );
           },
       )
