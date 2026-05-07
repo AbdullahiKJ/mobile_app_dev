@@ -10,6 +10,8 @@ import '../pages/new_post.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../pages/post_details.dart';
+
 class PostCard extends StatelessWidget {
   final Post post;
   final User user;
@@ -32,16 +34,32 @@ class PostCard extends StatelessWidget {
       ),
       margin: EdgeInsetsGeometry.all(0),
       borderRadius: 0,
-      child: Card(
-        elevation: 2,
-        child: Container(
-          margin: const EdgeInsets.all(4.0),
-          padding: const EdgeInsets.all(4.0),
-          child: Row(
-            children: <Widget>[
-              UserIcon(initials: user.initials),
-              _Post(post: post, user: user, onDelete: onDelete, onRefresh: onRefresh,),
-            ],
+      child: InkWell(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) =>
+                  PostPage(
+                    post: post,
+                    user: user,
+                    onDelete: onDelete,
+                    onRefresh: onRefresh,
+                  ),
+            ),
+          );
+        },
+        child: Card(
+          elevation: 2,
+          child: Container(
+            margin: const EdgeInsets.all(4.0),
+            padding: const EdgeInsets.all(4.0),
+            child: Row(
+              children: <Widget>[
+                UserIcon(initials: user.initials),
+                PostBody(post: post, user: user, onDelete: onDelete, onRefresh: onRefresh,),
+              ],
+            ),
           ),
         ),
       ),
@@ -49,13 +67,13 @@ class PostCard extends StatelessWidget {
   }
 }
 
-class _Post extends StatelessWidget {
+class PostBody extends StatelessWidget {
   final Post post;
   final User user;
   final VoidCallback onDelete;
   final VoidCallback onRefresh;
 
-  const _Post({
+  const PostBody({
     super.key,
     required this.post,
     required this.user,
@@ -103,6 +121,12 @@ class _PostDetails extends StatelessWidget {
     final TextStyle? userNameTheme = Theme.of(context).textTheme.titleLarge;
     final TextStyle? contentTheme = Theme.of(context).textTheme.bodyLarge;
 
+    String _formatTime(DateTime date) {
+      final hour = date.hour.toString().padLeft(2, '0');
+      final minute = date.minute.toString().padLeft(2, '0');
+      return "$hour:$minute";
+    }
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
@@ -114,7 +138,14 @@ class _PostDetails extends StatelessWidget {
                     child: Text(userName, style: userNameTheme)
                 ),
             ),
-            _Actions(post: post, onDelete: onDelete, onRefresh: onRefresh,)
+            Align(
+              alignment: Alignment.centerRight,
+              child: Text(
+                _formatTime(post.date),
+                style: Theme.of(context).textTheme.labelSmall,
+              ),
+            ),
+            _Actions(post: post, onDelete: onDelete, onRefresh: onRefresh,),
           ]
         ),
         Padding(
