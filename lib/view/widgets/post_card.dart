@@ -161,7 +161,7 @@ class _PostImages extends StatelessWidget {
 
   Widget _gridImages() {
     return SizedBox(
-      height: 200,
+      height: 325,
       child: GridView.builder(
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
@@ -174,17 +174,15 @@ class _PostImages extends StatelessWidget {
         itemBuilder: (context, index) {
           return ClipRRect(
             borderRadius: BorderRadius.circular(5),
-            child: SizedBox.expand(
-              child: Image.file(
-                File(images[index]),
-                fit: BoxFit.cover,
-                errorBuilder: (_, __, ___) {
-                  return Container(
-                    color: Colors.grey,
-                    child: const Icon(Icons.broken_image),
-                  );
-                }
-              ),
+            child: Image.file(
+              File(images[index]),
+              fit: BoxFit.cover,
+              errorBuilder: (_, __, ___) {
+                return Container(
+                  color: Colors.grey,
+                  child: const Icon(Icons.broken_image),
+                );
+              }
             ),
           );
         },
