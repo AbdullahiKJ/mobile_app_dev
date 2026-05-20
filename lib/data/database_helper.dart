@@ -137,7 +137,7 @@ class DatabaseHelper {
   // Add user for testing
   Future<int> insertUser(Map<String, dynamic> row) async {
     final db = await instance.database;
-    return await db.insert('users', row);
+    return await db.insert('Users', row);
   }
 
   Future close() async {

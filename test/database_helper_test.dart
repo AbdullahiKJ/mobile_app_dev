@@ -34,7 +34,7 @@ void main() {
     expect(posts.length, greaterThan(0));
   });
 
-  test('Get User Posts returns a list of posts from  given user', () async {
+  test('Get User Posts returns a list of posts from given user', () async {
     final db = DatabaseHelper.instance;
     await db.insertPost({
       'content': 'Test post',
@@ -120,7 +120,7 @@ void main() {
     expect(posts.length, greaterThan(0));
   });
 
-  test('Get All Users Posts returns a list of users', () async {
+  test('Get All Users returns a list of users', () async {
     final db = DatabaseHelper.instance;
 
     await db.insertUser({
@@ -135,14 +135,14 @@ void main() {
 
   test('Get user by id returns a user with the given id', () async {
     final db = DatabaseHelper.instance;
-    await db.insertUser({
+    final insertedId = await db.insertUser({
       'name': 'Test User',
     });
 
-    final user = await db.getUser(1);
+    final user = await db.getUser(insertedId);
 
-    expect(user, isNotEmpty);
-    expect(user!['id'], 1);
+    expect(user, isNotNull);
+    expect(user!['id'], insertedId);
   });
 
 }
